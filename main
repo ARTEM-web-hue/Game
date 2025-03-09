@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Угадай пароль</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .hidden-text {
+            display: none;
+        }
+        .input-container {
+            margin-top: 20px;
+        }
+        .game-section {
+            display: none;
+        }
+        .question {
+            margin-bottom: 10px;
+        }
+        .result {
+            font-weight: bold;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>Угадай пароль!</h1>
+
+    <!-- Главная страница -->
+    <div id="main-page">
+        <p>Первые 6 букв в пароле - буквы из сокращения нашего клуба.</p>
+        <button onclick="revealAll()">[Развернуть всё]</button>
+
+        <div id="part1" class="hidden-text">
+            Номер региона где я живу.
+        </div>
+
+        <div id="part2" class="hidden-text">
+            6 цифр (Подсказки на этом сайте).
+        </div>
+
+        <div id="part3" class="hidden-text">
+            Сокращение нашего клуба наоборот.
+        </div>
+
+        <div id="part4" class="hidden-text">
+            39 случайных цифр (Подсказка на сайте).
+        </div>
+
+        <div class="input-container">
+            <label for="password-input">Введите полный пароль:</label>
+            <input type="text" id="password-input">
+            <button onclick="checkPassword()">Проверить</button>
+            <div id="result"></div>
+        </div>
+
+        <button onclick="startGame()">Начать поиски 45 цифр... GO</button>
+    </div>
+
+    <!-- Игра для поиска 6 и 39 цифр -->
+    <div id="game-6-digits" class="game-section">
+        <h2>Что хочешь найти?</h2>
+        <button onclick="start6DigitsGame()">6 цифр</button>
+        <button onclick="start39DigitsGame()">39 цифр</button>
+        <button onclick="backToMain()">Вернуться назад</button>
+    </div>
+
+    <!-- Вопросы для 6 цифр -->
+    <div id="game-6-digits-questions" class="game-section">
+        <h2>Ответьте на вопросы:</h2>
+        <div class="question">
+            <label for="q1">Сколько лет игроку atemmax?</label>
+            <input type="text" id="q1">
+        </div>
+        <div class="question">
+            <label for="q2">Какое имя у atemmax?</label>
+            <input type="text" id="q2">
+        </div>
+        <div class="question">
+            <label for="q3">Какая фамилия?</label>
+            <input type="text" id="q3">
+        </div>
+        <div class="question">
+            <label for="q4">Он пьёт чай без молока?</label>
+            <input type="text" id="q4">
+        </div>
+        <div class="question">
+            <label for="q5">1=?</label>
+            <input type="text" id="q5">
+        </div>
+        <div class="question">
+            <label for="q6">1+3=5, 7+2=?</label>
+            <input type="text" id="q6">
+        </div>
+        <button onclick="check6DigitsAnswers()">Проверить</button>
+        <div id="digits-result"></div>
+        <button onclick="backToMain()" style="display: none;" id="back-from-digits">Вернуться назад</button>
+    </div>
+
+    <!-- Игра для поиска 39 цифр -->
+    <div id="game-39-digits" class="game-section">
+        <h2>Инструкция:</h2>
+        <ol>
+            <li>Включи звук на полную громкость.</li>
+            <li>Перейди на сайт ниже.</li>
+            <li>Разреши файлы куки.</li>
+            <li>39 цифр твои!</li>
+        </ol>
+        <a href="https://clck.ru/3FzPwJ" target="_blank" id="external-link">Перейти на сайт</a>
+        <button onclick="openAndReveal39Digits()">Получить цифры</button>
+        <div id="digits-39-result"></div>
+        <button onclick="backToMain()">Вернуться назад</button>
+    </div>
+
+    <script>
+        // Функция для показа всех частей текста
+        function revealAll() {
+            // Показываем все скрытые части
+            document.querySelectorAll('.hidden-text').forEach(text => {
+                text.style.display = 'block';
+            });
+
+            // Скрываем кнопку "Развернуть всё"
+            document.querySelector('#main-page button').style.display = 'none';
+        }
+
+        // Проверка пароля
+        const password = "БКВВДД102108678ДДВВКБ894689762745927562948568293569298469523"; // Пароль
+
+        function checkPassword() {
+            const input = document.getElementById('password-input').value;
+            if (input === password) {
+                document.getElementById('result').innerHTML = "ПРАВИЛЬНО БЫСТРЕЕ ЗАБИРАЙ ДЕНЬГИ!!!!!!! ВВОДИ ЭТОТ КОД В КЛУБЕ!";
+            } else {
+                document.getElementById('result').innerHTML = "Неверно. Попробуйте ещё раз.";
+            }
+        }
+
+        // Начало игры
+        function startGame() {
+            document.getElementById('main-page').style.display = 'none';
+            document.getElementById('game-6-digits').style.display = 'block';
+        }
+
+        // Вернуться на главную страницу
+        function backToMain() {
+            document.querySelectorAll('.game-section').forEach(section => section.style.display = 'none');
+            document.getElementById('main-page').style.display = 'block';
+        }
+
+        // Игра для 6 цифр
+        function start6DigitsGame() {
+            document.getElementById('game-6-digits').style.display = 'none';
+            document.getElementById('game-6-digits-questions').style.display = 'block';
+        }
+
+        function check6DigitsAnswers() {
+            const answers = {
+                q1: "10",
+                q2: "Артём",
+                q3: "Максютов",
+                q4: "Нет",
+                q5: "?",
+                q6: "9"
+            };
+
+            let correct = true;
+            for (const key in answers) {
+                if (document.getElementById(key).value !== answers[key]) {
+                    correct = false;
+                    break;
+                }
+            }
+
+            if (correct) {
+                document.getElementById('digits-result').innerHTML = "Правильные ответы! Вот ваши цифры: 108678";
+                document.getElementById('back-from-digits').style.display = 'block';
+            } else {
+                document.getElementById('digits-result').innerHTML = "Неверно. Попробуйте ещё раз.";
+            }
+        }
+
+        // Игра для 39 цифр
+        function start39DigitsGame() {
+            document.getElementById('game-6-digits').style.display = 'none';
+            document.getElementById('game-39-digits').style.display = 'block';
+        }
+
+        // Открыть внешний сайт и показать цифры
+        function openAndReveal39Digits() {
+            // Открыть сайт в новой вкладке
+            const externalLink = document.getElementById('external-link');
+            externalLink.click(); // Автоматически кликаем по ссылке
+
+            // Показать цифры через некоторое время
+            setTimeout(() => {
+                document.getElementById('digits-39-result').innerHTML = "Вот ваши цифры: 894689762745927562948568293569298469523";
+            }, 1000); // Ждём 1 секунду, чтобы пользователь успел перейти на сайт
+        }
+    </script>
+</body>
+</html>
